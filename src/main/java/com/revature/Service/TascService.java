@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.Model.Tasc;
 import com.revature.utils.ConnectionSource;
 import com.revature.utils.Dao;
+import com.revature.utils.DaoManager;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -23,6 +24,7 @@ public class TascService {
     public TascService() {
         dao = new Dao<>(Tasc.class);
         mapper = new ObjectMapper();
+        DaoManager.addDao(dao);
     }
 
     public void getTascs(HttpServletRequest req, HttpServletResponse resp) {

@@ -11,13 +11,27 @@ public class Tasc extends BaseClass {
     private String task;
     @Column(columnName = "description")
     private String description;
+    @Column(columnName = "about")
+    private String notes;
+    @Column(columnName = "completed")
+    private boolean completed;
 
     public Tasc() {
     }
 
-    public Tasc(String task, String description) {
+    public Tasc(String task, String description, String notes, boolean completed) {
         this.task = task;
         this.description = description;
+        this.notes = notes;
+        this.completed = completed;
+    }
+
+    public boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
     public String getTask() {
@@ -34,5 +48,13 @@ public class Tasc extends BaseClass {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

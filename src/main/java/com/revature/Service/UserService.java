@@ -5,6 +5,7 @@ import com.revature.Driver;
 import com.revature.Model.User;
 import com.revature.utils.ConnectionSource;
 import com.revature.utils.Dao;
+import com.revature.utils.DaoManager;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -24,6 +25,7 @@ public class UserService {
     public UserService() {
         dao = new Dao<>(User.class);
         mapper = new ObjectMapper();
+        DaoManager.addDao(dao);
     }
 
     public void getUsers(HttpServletRequest req, HttpServletResponse resp) {
