@@ -1,8 +1,7 @@
 package com.revature.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.Driver;
-import com.revature.Model.User;
+import com.revature.Model.Tasc;
 import com.revature.utils.ConnectionSource;
 import com.revature.utils.Dao;
 import org.apache.log4j.LogManager;
@@ -14,30 +13,27 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UserService {
-    private static final Logger logger = LogManager.getLogger(Driver.class);
+public class TascService {
+    private static final Logger logger = LogManager.getLogger(TascService.class);
 
-    private Dao<User> dao;
+    private Dao<Tasc> dao;
     private ObjectMapper mapper;
-    private ConnectionSource connectionSource = new ConnectionSource();
+    private ConnectionSource conn = new ConnectionSource();
 
-    public UserService() {
-        dao = new Dao<>(User.class);
+    public TascService() {
+        dao = new Dao<>(Tasc.class);
         mapper = new ObjectMapper();
     }
 
-    public void getUsers(HttpServletRequest req, HttpServletResponse resp) {
-        if(req.getParameter("userId") != null) {
-            System.out.println("id is not null");
-            if(req.getParameter("userId").equals("")) {
+    public void getTascs(HttpServletRequest req, HttpServletResponse resp) {
+        if(req.getParameter("taskId") != null) {
+            if(req.getParameter("taskId").equals("")) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                System.out.println("id params are empty");
                 return;
             }
             try {
-                System.out.println("looking for user");
                 String json = mapper.writerWithDefaultPrettyPrinter()
-                        .writeValueAsString(getUser(Integer.parseInt(req.getParameter("userId"))));
+                        .writeValueAsString(getTasc(Integer.parseInt(req.getParameter("taskId"))));
                 if(json.equals("null")) {
                     resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     return;
@@ -48,7 +44,7 @@ public class UserService {
             }
         } else {
             try {
-                String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(getUsers());
+                String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(getAllTascs());
                 resp.getOutputStream().print(json);
             } catch (IOException e) {
                 logger.warn(e.getMessage(), e);
@@ -56,33 +52,32 @@ public class UserService {
         }
     }
 
-    public User insertUser(HttpServletRequest req, HttpServletResponse resp) {
-        User result = null;
+    public Tasc insertTasc(HttpServletRequest req, HttpServletResponse resp) {
+        Tasc result = null;
         try {
             StringBuilder builder = new StringBuilder();
             req.getReader().lines().collect(Collectors.toList()).forEach(builder::append);
-            User user = mapper.readValue(builder.toString(), User.class);
-            result = insertUser(user);
+            Tasc tasc = mapper.readValue(builder.toString(), Tasc.class);
+            result = insertTasc(tasc);
             if(result != null) {
                 resp.setStatus(HttpServletResponse.SC_OK);
             } else {
                 resp.setStatus(HttpServletResponse.SC_CONFLICT);
             }
-            return result;
         } catch (IOException e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    public User updateUser(HttpServletRequest req, HttpServletResponse resp) {
-        User result = null;
+    public Tasc updateTasc(HttpServletRequest req, HttpServletResponse resp) {
+        Tasc result = null;
         StringBuilder builder = new StringBuilder();
         try {
             req.getReader().lines().collect(Collectors.toList()).forEach(builder::append);
-            User user = mapper.readValue(builder.toString(), User.class);
-            if(user.getId() != 0) {
-                result = updateUser(user);
+            Tasc tasc = mapper.readValue(builder.toString(), Tasc.class);
+            if(tasc.getId() != 0) {
+                result = updateTasc(tasc);
                 if(result != null) {
                     resp.setStatus(HttpServletResponse.SC_OK);
                     String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(result);
@@ -97,13 +92,13 @@ public class UserService {
         return result;
     }
 
-    public void deleteUser(HttpServletRequest req, HttpServletResponse resp) {
+    public void deleteTasc(HttpServletRequest req, HttpServletResponse resp) {
         StringBuilder builder = new StringBuilder();
         try {
             req.getReader().lines().collect(Collectors.toList()).forEach(builder::append);
-            User user = mapper.readValue(builder.toString(), User.class);
-            if(user != null) {
-                deleteUser(user.getId());
+            Tasc tasc = mapper.readValue(builder.toString(), Tasc.class);
+            if(tasc != null) {
+                deleteTasc(tasc.getId());
                 resp.setStatus(HttpServletResponse.SC_OK);
             } else {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -111,27 +106,29 @@ public class UserService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
-    private User insertUser(User user) {
-        dao.createTable(connectionSource);
-        return dao.insert(connectionSource, user);
+    private List<Tasc> getAllTascs() {
+        return dao.getAll(conn);
     }
 
-    private User getUser(int id) {
-        return dao.getById(connectionSource, id);
+    private Tasc getTasc(int id) {
+        return dao.getById(conn, id);
     }
 
-    private List<User> getUsers() {
-        return dao.getAll(connectionSource);
+    private Tasc insertTasc(Tasc tasc) {
+        dao.createTable(conn);
+        return dao.insert(conn, tasc);
     }
 
-    private User updateUser(User user) {
-        return dao.updateById(connectionSource, user.getId(), user);
+    private Tasc updateTasc(Tasc tasc) {
+        return dao.updateById(conn, tasc.getId(), tasc);
     }
 
-    private void deleteUser(int id) {
-        dao.deleteById(connectionSource, id);
+    private void deleteTasc(int id) {
+        dao.deleteById(conn, id);
     }
+
+
+
 }

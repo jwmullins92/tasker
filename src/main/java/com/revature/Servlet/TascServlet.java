@@ -1,6 +1,6 @@
 package com.revature.Servlet;
 
-import com.revature.Service.ToDoService;
+import com.revature.Service.TascService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,33 +9,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = "/toDos")
-public class ToDoServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/tascs")
+public class TascServlet extends HttpServlet {
 
-    private ToDoService service;
+    private TascService service;
 
-    public ToDoServlet() {
-        this.service = new ToDoService();
+    public TascServlet() {
+        this.service = new TascService();
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        service.getToDos(req, resp);
+        service.getTascs(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        service.insertToDo(req, resp);
+        service.insertTasc(req, resp);
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("In put servlet");
-        service.updateToDo(req, resp);
+        service.updateTasc(req, resp);
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        service.deleteToDo(req, resp);
+        service.deleteTasc(req, resp);
     }
 }
