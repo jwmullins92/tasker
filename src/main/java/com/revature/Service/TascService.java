@@ -1,5 +1,6 @@
 package com.revature.Service;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.Model.Tasc;
 import com.revature.utils.ConnectionSource;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TascService {
     private static final Logger logger = LogManager.getLogger(TascService.class);
 
@@ -61,7 +63,8 @@ public class TascService {
             req.getReader().lines().collect(Collectors.toList()).forEach(builder::append);
             Tasc tasc = mapper.readValue(builder.toString(), Tasc.class);
             result = insertTasc(tasc);
-            if(result != null) {
+            System.out.println("RESULT: " + result);
+            if(result != null && !result.equals("")) {
                 resp.setStatus(HttpServletResponse.SC_OK);
             } else {
                 resp.setStatus(HttpServletResponse.SC_CONFLICT);
@@ -110,24 +113,24 @@ public class TascService {
         }
     }
 
-    private List<Tasc> getAllTascs() {
+    protected List<Tasc> getAllTascs() {
         return dao.getAll(conn);
     }
 
-    private Tasc getTasc(int id) {
+    protected Tasc getTasc(int id) {
         return dao.getById(conn, id);
     }
 
-    private Tasc insertTasc(Tasc tasc) {
+    protected Tasc insertTasc(Tasc tasc) {
         dao.createTable(conn);
         return dao.insert(conn, tasc);
     }
 
-    private Tasc updateTasc(Tasc tasc) {
+    protected Tasc updateTasc(Tasc tasc) {
         return dao.updateById(conn, tasc.getId(), tasc);
     }
 
-    private void deleteTasc(int id) {
+    protected void deleteTasc(int id) {
         dao.deleteById(conn, id);
     }
 

@@ -116,24 +116,24 @@ public class UserService {
 
     }
 
-    private User insertUser(User user) {
+    protected User insertUser(User user) {
         dao.createTable(connectionSource);
         return dao.insert(connectionSource, user);
     }
 
-    private User getUser(int id) {
+    protected User getUser(int id) {
         return dao.getById(connectionSource, id);
     }
 
-    private List<User> getUsers() {
+    protected List<User> getUsers() {
         return dao.getAll(connectionSource);
     }
 
-    private User updateUser(User user) {
+    protected User updateUser(User user) {
         return dao.updateById(connectionSource, user.getId(), user);
     }
 
-    private void deleteUser(int id) {
+    protected void deleteUser(int id) {
         dao.deleteById(connectionSource, id);
     }
 }
